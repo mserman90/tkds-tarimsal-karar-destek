@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKDS PRO v2 — Türkiye Bitkisel Üretim Karar Destek Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: "#22c55e",
+                        darkBg: "#0f172a",
+                        cardBg: "#1e293b"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
+        .tab-active { border-bottom: 3px solid #22c55e; color: #22c55e; font-weight: 800; }
+        .tab-btn { padding: 12px 16px; font-size: 0.8rem; color: #94a3b8; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-weight: 600; text-transform: uppercase; }
+        .tab-btn:hover { color: #e2e8f0; }
+        .card { background: #1e293b; border-radius: 24px; border: 1px solid #334155; }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #064e3b; color: #4ade80; margin: 2px; transition: all 0.2s; }
+        .tag-clickable:hover { background: #22c55e; color: white; cursor: pointer; transform: scale(1.05); }
+        #mapContainer { height: 400px; width: 100%; border-radius: 20px; outline: none; background: #1e293b; }
+        .loader { border: 3px solid #334155; border-top: 3px solid #22c55e; border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        input, select { background: #334155; border: 1px solid #475569; border-radius: 12px; padding: 10px 14px; font-size: 0.85rem; color: white; width: 100%; outline: none; transition: border-color 0.2s; }
+        input:focus, select:focus { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2); }
+        .label-sm { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; display: block; }
+        .progress-bar { height: 8px; border-radius: 4px; background: #334155; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #4ade80); transition: width 1s ease-in-out; }
+        .highlight { background-color: rgba(34, 197, 94, 0.3); border-radius: 2px; padding: 0 2px; color: #4ade80; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .search-tab-btn { padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 8px; transition: all 0.2s; color: #94a3b8; }
+        .search-tab-btn.active { background: #22c55e; color: white; }
+        .page-btn-active { background: #22c55e !important; color: white !important; box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+        .page-btn-inactive { background: #334155; color: #94a3b8; }
+        .page-btn-inactive:hover { background: #475569; color: white; }
+        .alert-red { background: linear-gradient(135deg, #7f1d1d, #991b1b); border: 1px solid #dc2626; }
+        .alert-orange { background: linear-gradient(135deg, #7c2d12, #9a3412); border: 1px solid #ea580c; }
+        .alert-yellow { background: linear-gradient(135deg, #713f12, #854d0e); border: 1px solid #ca8a04; }
+        .alert-blue { background: linear-gradient(135deg, #1e3a5f, #1e40af); border: 1px solid #3b82f6; }
+        .support-card { background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 16px; }
+        .support-card h5 { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+        .loading-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+        .loading-overlay .loader { width: 48px; height: 48px; border-width: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loader"></div>
+        <p class="text-sm font-bold text-slate-300 uppercase tracking-widest">Veriler yükleniyor...</p>
+    </div>
+
+    <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-[2000]">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-green-500 to-green-700 p-2 rounded-2xl text-white shadow-xl shadow-green-900/40">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-sm md:text-base font-black tracking-tight text-white uppercase">TKDS <span class="text-green-500">PRO</span> <span class="text-[10px] text-slate-500 font-bold">v2</span></h1>
+                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.3em] leading-none">Türkiye Bitkisel Üretim Karar Destek</p>
+                </div>
+            </div>
+            <div class="flex gap-1.5 bg-slate-800 p-1 rounded-2xl">
+                <button onclick="switchPage('table')" id="btn-page-table" class="px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-active">KEŞİF</button>
+                <button onclick="switchPage('analysis')" id="btn-page-analysis" class="px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-inactive">ANALİZ PANELİ</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1">
+        
+        <!-- ÜRETİM TABLOSU -->
+        <div id="page-table" class="fade-in space-y-6">
+            <div class="card p-6 md:p-8 shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                    <div>
+                        <label class="label-sm">Bölge Filtreleme (İl)</label>
+                        <select id="ilFilter" onchange="handleSearch()"></select>
+                    </div>
+                    <div class="md:col-span-2 relative">
+                        <label class="label-sm">Hızlı Arama (İlçe, Ürün, Grup)</label>
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Örn: Antalya, Domates, Elma, Ceyhan...">
+                        <button onclick="clearFilters()" id="btnClearSearch" class="absolute right-3 bottom-3 text-slate-500 hover:text-white hidden">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button onclick="exportCSV()" class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-black text-[10px] tracking-widest uppercase transition-all">Dışa Aktar</button>
+                        <div class="bg-slate-800 px-4 py-3 rounded-xl border border-slate-700 flex flex-col justify-center min-w-[100px]">
+                            <span class="text-[8px] font-black text-slate-500 uppercase leading-none mb-1">Bulunan</span>
+                            <span id="resultCount" class="text-xs font-black text-green-500 leading-none">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-3xl border border-slate-700">
+                    <table class="w-full text-left min-w-[600px]">
+                        <thead class="bg-slate-800/50 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                            <tr>
+                                <th class="px-6 md:px-8 py-5">Bölge & İlçe</th>
+                                <th class="px-6 md:px-8 py-5">Ürün Deseni (Tarla, Sebze, Meyve)</th>
+                                <th class="px-6 md:px-8 py-5 text-center">Analiz</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-slate-700 text-sm"></tbody>
+                    </table>
+                </div>
+                <div id="pagination" class="flex justify-center gap-2 mt-8"></div>
+            </div>
+        </div>
+
+        <!-- ANALİZ PANELİ -->
+        <div id="page-analysis" class="hidden fade-in space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="card p-6 border-t-4 border-t-green-500 shadow-2xl">
+                        <h3 class="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-[0.2em]">Üretim & Kadastro Bilgileri</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="label-sm">Bölge</label>
+                                <select id="anaIl" class="mb-2"></select>
+                                <select id="anaIlce" disabled class="mb-2"></select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="label-sm">Ada No</label>
+                                    <input type="text" id="inpAda" placeholder="Örn: 102">
+                                </div>
+                                <div>
+                                    <label class="label-sm">Parsel No</label>
+                                    <input type="text" id="inpParsel" placeholder="Örn: 15">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label-sm">Ürün Seçimi</label>
+                                <select id="anaUrun" disabled></select>
+                            </div>
+                            <div>
+                                <label class="label-sm">Analiz Türü</label>
+                                <select id="inpCert">
+                                    <option value="yes">Evet (Kadastral & Destekli)</option>
+                                    <option value="no" selected>Hayır (Sadece Teknik)</option>
+                                </select>
+                            </div>
+                            <button id="btnRunAnaliz" onclick="runAnalysisWorkflow()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl shadow-xl transition-all uppercase text-[11px] tracking-widest">Sistemi Çalıştır</button>
+                        </div>
+                    </div>
+
+                    <div id="mapBox" class="card overflow-hidden hidden shadow-lg relative">
+                        <div id="mapContainer"></div>
+                        <div class="absolute top-4 left-4 z-[1000]">
+                            <button onclick="toggleSearchPanel(true)" class="bg-slate-900 text-white p-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-2 hover:bg-slate-800 transition-all">
+                                <span class="text-xs font-bold uppercase tracking-tighter">🔍 ARAZİ ARA</span>
+                            </button>
+                        </div>
+                        <div class="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
+                             <button onclick="setMapLayer('street')" class="bg-white text-slate-900 p-2.5 rounded-xl shadow-xl text-[9px] font-black">CADDE</button>
+                             <button onclick="setMapLayer('satellite')" class="bg-green-600 text-white p-2.5 rounded-xl shadow-xl text-[9px] font-black">UYDU</button>
+                             <button onclick="locateMe()" class="bg-blue-600 text-white p-2.5 rounded-xl shadow-xl text-[9px] font-black">GPS</button>
+                        </div>
+                        <div class="p-4 bg-slate-900/90 border-t border-slate-700 backdrop-blur text-xs">
+                            <div class="grid grid-cols-2 gap-4 mb-2">
+                                <div><p class="text-[8px] text-slate-500 font-bold uppercase">Ada / Parsel</p><p id="dispAdaParsel" class="font-bold text-green-500">-- / --</p></div>
+                                <div><p class="text-[8px] text-slate-500 font-bold uppercase">Mahalle / Köy</p><p id="dispMahalle" class="font-bold text-white truncate">--</p></div>
+                            </div>
+                            <p id="mapCoord" class="text-[10px] font-mono text-green-500 font-bold tracking-tighter"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 space-y-6">
+                    <div id="analysisEmpty" class="card p-20 md:p-32 text-center border-2 border-dashed border-slate-700">
+                        <div class="text-4xl mb-4">🌾</div>
+                        <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">Veri girişi yapıp analizi başlatın</p>
+                        <p class="text-slate-600 text-[10px] mt-2">İl, ilçe ve ürün seçtikten sonra "Sistemi Çalıştır" butonuna tıklayın</p>
+                    </div>
+
+                    <div id="analysisContent" class="hidden space-y-6">
+                        <div id="criticalAlarms" class="grid grid-cols-1 gap-3"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+                            <div class="card p-4 bg-gradient-to-br from-slate-800 to-slate-900 border-green-500/20 shadow-xl">
+                                <p class="text-[8px] font-black text-slate-500 uppercase mb-2">Net Kâr Tahmini</p>
+                                <p id="sumProfit" class="text-lg md:text-xl font-black text-green-400">-- ₺</p>
+                            </div>
+                            <div class="card p-4 border-l-4 border-l-blue-500">
+                                <p class="text-[8px] font-black text-slate-500 uppercase mb-2">Hasat Durumu</p>
+                                <div class="progress-bar mb-1"><div id="phenoProgress" class="progress-fill" style="width: 0%"></div></div>
+                                <p id="sumPheno" class="text-[10px] font-black text-slate-200">--</p>
+                            </div>
+                            <div class="card p-4 border-l-4 border-l-orange-500">
+                                <p class="text-[8px] font-black text-slate-500 uppercase mb-2">Toplam Destek</p>
+                                <p id="sumGov" class="text-lg md:text-xl font-black text-orange-500">-- ₺</p>
+                            </div>
+                            <div class="card p-4 border-l-4 border-l-green-500">
+                                <p class="text-[8px] font-black text-slate-500 uppercase mb-2">Sentinel NDVI</p>
+                                <p id="sumNDVI" class="text-lg md:text-xl font-black text-green-500">--</p>
+                            </div>
+                            <div class="card p-4 border-l-4 border-l-purple-500">
+                                <p class="text-[8px] font-black text-slate-500 uppercase mb-2">Münavebe</p>
+                                <p id="sumRot" class="text-[10px] font-black text-purple-400 uppercase leading-tight">--</p>
+                            </div>
+                        </div>
+
+                        <div class="card overflow-hidden">
+                            <div class="flex border-b border-slate-700 bg-slate-800/30 px-4 overflow-x-auto no-scrollbar">
+                                <button onclick="showTab('agro')" class="tab-btn tab-active" id="t-agro">🧬 KADASTRO & SAĞLIK</button>
+                                <button onclick="showTab('gov')" class="tab-btn" id="t-gov">🏛️ DESTEKLEMELER</button>
+                                <button onclick="showTab('eco')" class="tab-btn" id="t-eco">📊 FİNANSAL</button>
+                                <button onclick="showTab('met')" class="tab-btn" id="t-met">🌦️ METEOROLOJİ</button>
+                            </div>
+
+                            <div class="p-6 md:p-8 text-xs">
+                                <div id="tab-agro" class="fade-in space-y-8">
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+                                        <div class="space-y-4">
+                                            <h4 class="text-sm font-black text-slate-300 uppercase">Resmi Kayıtlar</h4>
+                                            <div id="tkgmLinkBox" class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
+                                                <p class="text-slate-400 mb-3">TKGM portalı üzerinden resmi parsel sorgulama:</p>
+                                                <a id="tkgmExternalLink" href="#" target="_blank" class="w-full inline-block text-center py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all">SORGULA ↗</a>
+                                            </div>
+                                            <div class="h-56"><canvas id="chartNDVI"></canvas></div>
+                                        </div>
+                                        <div class="space-y-4">
+                                            <h4 class="text-sm font-black text-slate-300 uppercase tracking-widest">Büyüme & Uygulama</h4>
+                                            <div id="sprayWidget" class="mt-2"></div>
+                                            <div id="phenoInfo" class="mt-4"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-gov" class="hidden space-y-6">
+                                    <div id="govList" class="space-y-3"></div>
+                                    <div id="ipardInfo" class="p-4 bg-slate-800 rounded-2xl border border-slate-700 hidden">
+                                        <h5 class="text-xs font-black text-blue-400 uppercase mb-2">IPARD III — AB Kırsal Kalkınma</h5>
+                                        <p class="text-slate-400 text-[11px]">2026 Yılı: <span class="text-white font-bold">241 Milyon Avro</span> bütçeli 4 farklı tedbir kapsamında yatırım destekleri uygulanmaktadır.</p>
+                                        <p class="text-slate-500 text-[10px] mt-1">Tedbir 1: Tarımsal İşletme Yatırımları | Tedbir 3: Kırsal Altyapı | Tedbir 5: Çevre Yatırımları | Tedbir 7: Çiftlik Faaliyetleri</p>
+                                    </div>
+                                    <div class="h-64"><canvas id="chartGov"></canvas></div>
+                                </div>
+                                <div id="tab-eco" class="hidden space-y-8">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                                        <div><label class="label-sm">Alan (da)</label><input type="number" id="eArea" value="10" oninput="updateFinancials()"></div>
+                                        <div><label class="label-sm">Borsa (₺/kg)</label><input type="number" id="ePrice" step="0.1" oninput="updateFinancials()"></div>
+                                        <div><label class="label-sm">Toplam Gider (₺/da)</label><input type="number" id="eCost" value="3800" oninput="updateFinancials()"></div>
+                                    </div>
+                                    <div id="ecoSummaryCards" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                                    <div id="costBreakdown" class="grid grid-cols-3 md:grid-cols-6 gap-2"></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="h-72"><canvas id="chartEco"></canvas></div>
+                                        <div class="h-72"><canvas id="chartCostPie"></canvas></div>
+                                    </div>
+                                </div>
+                                <div id="tab-met" class="hidden space-y-8">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="h-64"><canvas id="chartTemp"></canvas></div>
+                                        <div class="h-64"><canvas id="chartRain"></canvas></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="h-64"><canvas id="chartHumidity"></canvas></div>
+                                        <div class="h-64"><canvas id="chartSoilMoisture"></canvas></div>
+                                    </div>
+                                    <div id="weatherStrip" class="flex gap-3 overflow-x-auto pt-4 no-scrollbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARAZİ ARAMA MODAL PANELİ -->
+        <div id="searchModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[5000] hidden flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-800/30">
+                    <h2 class="text-xs font-black uppercase tracking-widest text-slate-300">Arazi / Parsel Arama</h2>
+                    <button onclick="toggleSearchPanel(false)" class="text-slate-500 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div class="p-2 flex gap-1 bg-slate-800/50">
+                    <button onclick="switchSearchTab('adaparsel')" id="s-tab-adaparsel" class="search-tab-btn flex-1 active">ADA/PARSEL</button>
+                    <button onclick="switchSearchTab('adres')" id="s-tab-adres" class="search-tab-btn flex-1">ADRES</button>
+                    <button onclick="switchSearchTab('koordinat')" id="s-tab-koordinat" class="search-tab-btn flex-1">GPS</button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div id="s-content-adaparsel" class="space-y-4">
+                        <div><label class="label-sm">Mahalle / Köy Adı</label><input type="text" id="sInpMahalle" placeholder="Örn: Akçakale Köyü"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="label-sm">Ada No</label><input type="text" id="sInpAda"></div>
+                            <div><label class="label-sm">Parsel No</label><input type="text" id="sInpParsel"></div>
+                        </div>
+                        <button onclick="runAdvancedSearch('adaparsel')" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-2xl shadow-xl transition-all text-xs tracking-widest uppercase mt-4">KONUMA GİT</button>
+                    </div>
+                    <div id="s-content-adres" class="space-y-4 hidden">
+                        <div><label class="label-sm">Tam Adres</label><input type="text" id="sInpAdres" placeholder="Örn: Polatlı Şıhali Köyü"></div>
+                        <button onclick="runAdvancedSearch('adres')" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl transition-all text-xs tracking-widest uppercase">ADRESİ ARA</button>
+                    </div>
+                    <div id="s-content-koordinat" class="space-y-4 hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="label-sm">Enlem (Lat)</label><input type="text" id="sInpLat"></div>
+                            <div><label class="label-sm">Boylam (Lon)</label><input type="text" id="sInpLon"></div>
+                        </div>
+                        <button onclick="runAdvancedSearch('koordinat')" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-black rounded-2xl shadow-xl transition-all text-xs tracking-widest uppercase">UÇ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center space-y-2">
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">TKDS PRO v2.0 — 2025-2027 Destekleme Dönemi</p>
+            <p class="text-[9px] text-slate-600">Veriler: T.C. Tarım ve Orman Bakanlığı, Open-Meteo, OpenStreetMap</p>
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer" class="inline-block text-[10px] text-slate-500 hover:text-green-500 transition-colors">Created with Perplexity Computer</a>
+        </div>
+    </footer>
+
+    <script>
+    // ========================================================================
+    // AGRO_DB — Ürün Parametreleri (Genişletilmiş)
+    // ========================================================================
+    const AGRO_DB = {
+        "Buğday":            {kc:1.15, price:9.6,   yield:500,  type:'tahıl',       targetGDD:1600, tbase:5, disease:'Pas', plantMonth:10, harvestMonth:6},
+        "Arpa":              {kc:1.15, price:8.4,   yield:450,  type:'tahıl',       targetGDD:1400, tbase:5, disease:'Leke', plantMonth:10, harvestMonth:6},
+        "Mısır (Dane)":      {kc:1.2,  price:7.9,   yield:1200, type:'endüstriyel', targetGDD:2400, tbase:10, disease:'Fusarium', plantMonth:4, harvestMonth:9},
+        "Pamuk (Kütlü)":     {kc:1.15, price:27.2,  yield:480,  type:'endüstriyel', targetGDD:2800, tbase:15, disease:'Solgunluk', plantMonth:4, harvestMonth:10},
+        "Ayçiçeği (Yağlık)": {kc:1.1,  price:18.8,  yield:280,  type:'yağlı',       targetGDD:1800, tbase:6, disease:'Mildiyö', plantMonth:3, harvestMonth:8},
+        "Nohut":             {kc:1.0,  price:25.0,  yield:180,  type:'baklagil',    targetGDD:1300, tbase:5, disease:'Antraknoz', plantMonth:2, harvestMonth:7},
+        "Mercimek":          {kc:1.0,  price:28.0,  yield:150,  type:'baklagil',    targetGDD:1200, tbase:5, disease:'Kök Çürüklüğü', plantMonth:10, harvestMonth:6},
+        "Soya":              {kc:1.15, price:19.0,  yield:400,  type:'baklagil',    targetGDD:2100, tbase:10, disease:'Külleme', plantMonth:5, harvestMonth:10},
+        "Kanola":            {kc:1.1,  price:16.0,  yield:350,  type:'yağlı',       targetGDD:1600, tbase:5, disease:'Mildiyö', plantMonth:9, harvestMonth:6},
+        "Çeltik":            {kc:1.2,  price:13.5,  yield:750,  type:'endüstriyel', targetGDD:2200, tbase:10, disease:'Blast', plantMonth:5, harvestMonth:9},
+        "Çay":               {kc:0.95, price:12.0,  yield:1200, type:'endüstriyel', targetGDD:3000, tbase:10, disease:'Yaprak Yanığı', plantMonth:1, harvestMonth:10},
+        "Fındık":            {kc:0.9,  price:95.0,  yield:150,  type:'meyve',       targetGDD:2500, tbase:7, disease:'Külleme', plantMonth:1, harvestMonth:8},
+        "Şeker Pancarı":     {kc:1.2,  price:1.2,   yield:6000, type:'endüstriyel', targetGDD:2600, tbase:3, disease:'Cercospora', plantMonth:3, harvestMonth:10},
+        "Yerfıstığı":        {kc:1.1,  price:55.0,  yield:350,  type:'baklagil',    targetGDD:2500, tbase:13, disease:'Aflatoksin', plantMonth:4, harvestMonth:9},
+        "Susam":             {kc:0.9,  price:60.0,  yield:120,  type:'yağlı',       targetGDD:2000, tbase:15, disease:'Pas', plantMonth:5, harvestMonth:9},
+        "Aspir":             {kc:0.9,  price:14.0,  yield:150,  type:'yağlı',       targetGDD:1700, tbase:5, disease:'Pas', plantMonth:3, harvestMonth:8},
+        "Karpuz":            {kc:1.0,  price:3.5,   yield:5000, type:'sebze',       targetGDD:2200, tbase:15, disease:'Fusarium', plantMonth:4, harvestMonth:7},
+        "Kavun":             {kc:1.0,  price:5.0,   yield:3500, type:'sebze',       targetGDD:2000, tbase:15, disease:'Külleme', plantMonth:4, harvestMonth:8},
+        "Domates":           {kc:1.1,  price:14.0,  yield:8000, type:'sebze',       targetGDD:1800, tbase:10, disease:'Mildiyö', plantMonth:3, harvestMonth:9},
+        "Biber":             {kc:1.05, price:18.0,  yield:4500, type:'sebze',       targetGDD:2200, tbase:15, disease:'Külleme', plantMonth:3, harvestMonth:9},
+        "Hıyar":             {kc:1.0,  price:12.0,  yield:6000, type:'sebze',       targetGDD:1500, tbase:15, disease:'Mildiyö', plantMonth:4, harvestMonth:8},
+        "Patlıcan":          {kc:1.1,  price:16.0,  yield:5000, type:'sebze',       targetGDD:2500, tbase:15, disease:'Solgunluk', plantMonth:3, harvestMonth:10},
+        "Patates":           {kc:1.15, price:11.0,  yield:4000, type:'sebze',       targetGDD:1700, tbase:4, disease:'Septorya', plantMonth:3, harvestMonth:8},
+        "Soğan (Kuru)":      {kc:1.05, price:9.0,   yield:5000, type:'sebze',       targetGDD:1800, tbase:5, disease:'Pas', plantMonth:3, harvestMonth:8},
+        "Fasulye":           {kc:1.0,  price:35.0,  yield:200,  type:'baklagil',    targetGDD:1400, tbase:10, disease:'Antraknoz', plantMonth:5, harvestMonth:9},
+        "Bezelye":           {kc:1.0,  price:22.0,  yield:300,  type:'baklagil',    targetGDD:1100, tbase:5, disease:'Külleme', plantMonth:10, harvestMonth:5},
+        "Marul":             {kc:0.9,  price:8.0,   yield:3000, type:'sebze',       targetGDD:900,  tbase:5, disease:'Mildiyö', plantMonth:9, harvestMonth:12},
+        "Lahana":            {kc:1.0,  price:5.0,   yield:6000, type:'sebze',       targetGDD:1200, tbase:5, disease:'Leke', plantMonth:7, harvestMonth:12},
+        "Havuç":             {kc:1.0,  price:7.0,   yield:4000, type:'sebze',       targetGDD:1300, tbase:5, disease:'Alternaria', plantMonth:3, harvestMonth:7},
+        "Elma":              {kc:0.95, price:18.0,  yield:4000, type:'meyve',       targetGDD:1500, tbase:7, disease:'Karahumma', plantMonth:1, harvestMonth:9},
+        "Zeytin":            {kc:0.75, price:45.0,  yield:400,  type:'meyve',       targetGDD:2800, tbase:10, disease:'Halkalı Leke', plantMonth:1, harvestMonth:11},
+        "İncir":             {kc:0.85, price:80.0,  yield:1200, type:'meyve',       targetGDD:3000, tbase:10, disease:'Pas', plantMonth:1, harvestMonth:8},
+        "Narenciye":         {kc:0.75, price:15.0,  yield:5000, type:'meyve',       targetGDD:3500, tbase:13, disease:'Uçkurutan', plantMonth:1, harvestMonth:12},
+        "Kayısı":            {kc:0.9,  price:60.0,  yield:1500, type:'meyve',       targetGDD:1600, tbase:7, disease:'Monilya', plantMonth:1, harvestMonth:7},
+        "Kiraz":             {kc:1.0,  price:55.0,  yield:1200, type:'meyve',       targetGDD:1400, tbase:7, disease:'Leke', plantMonth:1, harvestMonth:6},
+        "Üzüm":              {kc:0.85, price:35.0,  yield:2500, type:'meyve',       targetGDD:2200, tbase:10, disease:'Mildiyö', plantMonth:1, harvestMonth:9},
+        "Antep Fıstığı":     {kc:0.7,  price:350.0, yield:150,  type:'meyve',       targetGDD:3200, tbase:10, disease:'Leke', plantMonth:1, harvestMonth:9},
+        "Şeftali":           {kc:0.95, price:25.0,  yield:2000, type:'meyve',       targetGDD:1800, tbase:7, disease:'Külleme', plantMonth:1, harvestMonth:7},
+        "Armut":             {kc:0.9,  price:20.0,  yield:3000, type:'meyve',       targetGDD:1600, tbase:7, disease:'Ateş Yanığı', plantMonth:1, harvestMonth:9},
+        "Nar":               {kc:0.8,  price:22.0,  yield:2500, type:'meyve',       targetGDD:2800, tbase:10, disease:'Çatlama', plantMonth:1, harvestMonth:10},
+        "Ceviz":             {kc:0.8,  price:120.0, yield:200,  type:'meyve',       targetGDD:2200, tbase:7, disease:'Antraknoz', plantMonth:1, harvestMonth:9},
+        "Badem":             {kc:0.75, price:130.0, yield:180,  type:'meyve',       targetGDD:2000, tbase:7, disease:'Monilya', plantMonth:1, harvestMonth:8},
+        "Kivi":              {kc:0.95, price:30.0,  yield:2500, type:'meyve',       targetGDD:2400, tbase:10, disease:'Bakteriyel Kanser', plantMonth:1, harvestMonth:11},
+        "Çilek":             {kc:1.0,  price:40.0,  yield:3000, type:'meyve',       targetGDD:1200, tbase:7, disease:'Külleme', plantMonth:9, harvestMonth:5},
+        "Vişne":             {kc:0.95, price:30.0,  yield:1500, type:'meyve',       targetGDD:1300, tbase:7, disease:'Monilya', plantMonth:1, harvestMonth:6}
+    };
+
+    // ========================================================================
+    // TARIM_DATA — İl/İlçe/Ürün (50+ kayıt, 7 bölge)
+    // ========================================================================
+    const TARIM_DATA = [
+        // MARMARA
+        {il:"TEKİRDAĞ", ilce:"HAYRABOLU", urunler:"Ayçiçeği (Yağlık), Buğday, Kanola, Arpa"},
+        {il:"TEKİRDAĞ", ilce:"ÇORLU", urunler:"Buğday, Arpa, Ayçiçeği (Yağlık)"},
+        {il:"EDİRNE", ilce:"UZUNKÖPRÜ", urunler:"Çeltik, Ayçiçeği (Yağlık), Buğday"},
+        {il:"EDİRNE", ilce:"İPSALA", urunler:"Çeltik, Buğday, Ayçiçeği (Yağlık)"},
+        {il:"KIRKLARELİ", ilce:"LÜLEBURGAZ", urunler:"Ayçiçeği (Yağlık), Buğday, Arpa, Kanola"},
+        {il:"BALIKESİR", ilce:"BANDIRMA", urunler:"Buğday, Ayçiçeği (Yağlık), Domates, Zeytin"},
+        {il:"BALIKESİR", ilce:"EDREMİT", urunler:"Zeytin, Armut, Şeftali"},
+        {il:"ÇANAKKALE", ilce:"BİGA", urunler:"Çeltik, Domates, Biber, Şeftali"},
+        {il:"BURSA", ilce:"İNEGÖL", urunler:"Elma, Şeftali, Kiraz, Armut"},
+        {il:"BURSA", ilce:"KARACABEY", urunler:"Domates, Soğan (Kuru), Mısır (Dane), Buğday"},
+        {il:"BURSA", ilce:"M.KEMALPAŞA", urunler:"Şeftali, Kiraz, Zeytin"},
+        {il:"SAKARYA", ilce:"HENDEK", urunler:"Fındık, Mısır (Dane), Buğday"},
+
+        // EGE
+        {il:"İZMİR", ilce:"TORBALI", urunler:"Pamuk (Kütlü), Domates, Zeytin, Üzüm"},
+        {il:"İZMİR", ilce:"ÖDEMİŞ", urunler:"Patates, İncir, Zeytin, Kiraz"},
+        {il:"İZMİR", ilce:"MENEMEN", urunler:"Pamuk (Kütlü), Domates, Buğday"},
+        {il:"AYDIN", ilce:"SÖKE", urunler:"Pamuk (Kütlü), Zeytin, Buğday"},
+        {il:"AYDIN", ilce:"NAZİLLİ", urunler:"İncir, Zeytin, Pamuk (Kütlü), Narenciye"},
+        {il:"MANİSA", ilce:"AKHİSAR", urunler:"Zeytin, Üzüm, Pamuk (Kütlü), Buğday"},
+        {il:"MANİSA", ilce:"SALİHLİ", urunler:"Üzüm, Pamuk (Kütlü), Domates"},
+        {il:"DENİZLİ", ilce:"ÇİVRİL", urunler:"Şeker Pancarı, Elma, Buğday, Nohut"},
+        {il:"MUĞLA", ilce:"ORTACA", urunler:"Narenciye, Domates, Biber"},
+
+        // AKDENİZ
+        {il:"ANTALYA", ilce:"KUMLUCA", urunler:"Domates, Biber, Hıyar, Patlıcan, Narenciye"},
+        {il:"ANTALYA", ilce:"AKSU", urunler:"Domates, Pamuk (Kütlü), Mısır (Dane), Narenciye"},
+        {il:"ANTALYA", ilce:"MANAVGAT", urunler:"Narenciye, Muz, Karpuz, Biber"},
+        {il:"MERSİN", ilce:"TARSUS", urunler:"Üzüm, Narenciye, Pamuk (Kütlü), Soya, Buğday"},
+        {il:"MERSİN", ilce:"SİLİFKE", urunler:"Narenciye, Çilek, Muz, Karpuz"},
+        {il:"ADANA", ilce:"CEYHAN", urunler:"Buğday, Pamuk (Kütlü), Mısır (Dane), Soya, Yerfıstığı"},
+        {il:"ADANA", ilce:"YÜREĞİR", urunler:"Narenciye, Pamuk (Kütlü), Mısır (Dane), Soya, Buğday"},
+        {il:"HATAY", ilce:"DÖRTYOL", urunler:"Narenciye, Zeytin, Buğday"},
+        {il:"HATAY", ilce:"REYHANLILI", urunler:"Buğday, Pamuk (Kütlü), Mısır (Dane)"},
+        {il:"ISPARTA", ilce:"EĞİRDİR", urunler:"Elma, Kiraz, Vişne"},
+        {il:"KAHRAMANMARAŞ", ilce:"PAZARCIK", urunler:"Biber, Buğday, Arpa, Nohut"},
+
+        // İÇ ANADOLU
+        {il:"ANKARA", ilce:"POLATLI", urunler:"Buğday, Arpa, Nohut, Soğan (Kuru), Şeker Pancarı"},
+        {il:"ANKARA", ilce:"HAYMANA", urunler:"Buğday, Arpa, Nohut, Mercimek"},
+        {il:"KONYA", ilce:"ÇUMRA", urunler:"Şeker Pancarı, Mısır (Dane), Buğday, Arpa"},
+        {il:"KONYA", ilce:"EREĞLİ", urunler:"Elma, Kiraz, Şeker Pancarı, Buğday"},
+        {il:"ESKİŞEHİR", ilce:"ÇİFTELER", urunler:"Buğday, Arpa, Şeker Pancarı, Nohut"},
+        {il:"KAYSERİ", ilce:"DEVELİ", urunler:"Patates, Soğan (Kuru), Buğday, Arpa"},
+        {il:"NEVŞEHİR", ilce:"ÜRGÜP", urunler:"Üzüm, Patates, Buğday, Kayısı"},
+        {il:"NİĞDE", ilce:"BOR", urunler:"Patates, Elma, Buğday, Fasulye"},
+        {il:"YOZGAT", ilce:"SORGUN", urunler:"Buğday, Arpa, Şeker Pancarı, Nohut"},
+
+        // KARADENİZ
+        {il:"SAMSUN", ilce:"BAFRA", urunler:"Çeltik, Buğday, Fındık, Mısır (Dane)"},
+        {il:"SAMSUN", ilce:"ÇARŞAMBA", urunler:"Fındık, Mısır (Dane), Kivi"},
+        {il:"ORDU", ilce:"ÜNYE", urunler:"Fındık, Mısır (Dane), Kivi"},
+        {il:"RİZE", ilce:"ÇAYELİ", urunler:"Çay, Kivi"},
+        {il:"TRABZON", ilce:"OF", urunler:"Çay, Fındık, Kivi"},
+        {il:"BOLU", ilce:"MUDURNU", urunler:"Buğday, Arpa, Patates, Elma"},
+
+        // GÜNEYDOĞU ANADOLU
+        {il:"GAZİANTEP", ilce:"NİZİP", urunler:"Antep Fıstığı, Zeytin, Arpa"},
+        {il:"GAZİANTEP", ilce:"İSLAHİYE", urunler:"Zeytin, Biber, Buğday"},
+        {il:"ŞANLIURFA", ilce:"HARRAN", urunler:"Pamuk (Kütlü), Mısır (Dane), Buğday"},
+        {il:"ŞANLIURFA", ilce:"AKÇAKALE", urunler:"Pamuk (Kütlü), Buğday, Arpa, Mercimek"},
+        {il:"MARDİN", ilce:"KIZILTEPE", urunler:"Buğday, Arpa, Mercimek, Nohut"},
+        {il:"DİYARBAKIR", ilce:"BİSMİL", urunler:"Pamuk (Kütlü), Buğday, Mısır (Dane), Karpuz"},
+
+        // DOĞU ANADOLU
+        {il:"MALATYA", ilce:"YEŞİLYURT", urunler:"Kayısı, Elma, Kiraz"},
+        {il:"MALATYA", ilce:"AKÇADAĞ", urunler:"Kayısı, Arpa, Buğday"},
+        {il:"ERZURUM", ilce:"PALANDÖKEN", urunler:"Buğday, Arpa, Patates, Şeker Pancarı"},
+        {il:"VAN", ilce:"ERCİŞ", urunler:"Buğday, Arpa, Şeker Pancarı, Patates"}
+    ];
+
+    // ========================================================================
+    // IL_COORD — Tüm iller için koordinatlar
+    // ========================================================================
+    const IL_COORD = {
+        "ADANA":[37.00,35.32], "ANKARA":[39.93,32.85], "ANTALYA":[36.88,30.70], "AYDIN":[37.84,27.84],
+        "BALIKESİR":[39.64,27.88], "BOLU":[40.73,31.61], "BURSA":[40.18,29.06], "ÇANAKKALE":[40.15,26.41],
+        "DENİZLİ":[37.77,29.09], "DİYARBAKIR":[37.91,40.22], "EDİRNE":[41.67,26.55], "ERZURUM":[39.90,41.27],
+        "ESKİŞEHİR":[39.77,30.52], "GAZİANTEP":[37.06,37.38], "HATAY":[36.40,36.35], "ISPARTA":[37.76,30.55],
+        "İZMİR":[38.42,27.14], "KAHRAMANMARAŞ":[37.58,36.93], "KAYSERİ":[38.73,35.48], "KIRKLARELİ":[41.73,27.22],
+        "KONYA":[37.87,32.48], "MALATYA":[38.35,38.30], "MANİSA":[38.61,27.43], "MARDİN":[37.31,40.73],
+        "MERSİN":[36.81,34.64], "MUĞLA":[37.21,28.36], "NEVŞEHİR":[38.62,34.71], "NİĞDE":[37.97,34.68],
+        "ORDU":[41.00,37.88], "RİZE":[41.02,40.52], "SAKARYA":[40.67,30.40], "SAMSUN":[41.29,36.33],
+        "ŞANLIURFA":[37.15,38.79], "TEKİRDAĞ":[40.98,27.51], "TRABZON":[41.00,39.72], "VAN":[38.49,43.38],
+        "YOZGAT":[39.82,34.80]
+    };
+
+    // ========================================================================
+    // SUPPORT_2025 — 2025-2027 Destekleme Verileri
+    // ========================================================================
+    const SUPPORT_2025 = {
+        birimDeger: 244, // TL/da
+        temelDestek: {
+            kat1: { katsayi: 1.0, tutar: 244, urunler: ["Aspir","Mercimek","Mısır (Dane)","Nohut","Patates","Soğan (Kuru)"] },
+            kat2: { katsayi: 1.3, tutar: 317.2, urunler: ["Arpa","Buğday","Çavdar","Tritikale","Yulaf"] },
+            kat3: { katsayi: 1.5, tutar: 366, urunler: ["Ayçiçeği (Yağlık)","Fındık","Kanola","Fasulye","Soya","Çay"] },
+            kat4: { katsayi: 2.25, tutar: 549, urunler: ["Çeltik","Pamuk (Kütlü)"] },
+            nadas: { katsayi: 0.3, tutar: 73.2 }
+        },
+        planliUretim: {
+            kat1: { tutar: 244, urunler: ["Aspir","Mercimek","Mısır (Dane)","Nohut","Patates","Soğan (Kuru)"] },
+            kat2: { tutar: 317.2, urunler: ["Arpa","Buğday"] },
+            kat3: { tutar: 366, urunler: ["Ayçiçeği (Yağlık)","Kanola","Fasulye","Soya"] },
+            kat4: { tutar: 549, urunler: ["Pamuk (Kütlü)"] }
+        },
+        sertifikaliTohum: {
+            a_arpabuğday: { tutar: 122, urunler: ["Arpa","Buğday"] },
+            a_aspir: { tutar: 48.8, urunler: ["Aspir","Kanola","Susam"] },
+            a_korunga: { tutar: 146.4, urunler: ["Soya","Yerfıstığı"] },
+            a_fig: { tutar: 97.6, urunler: ["Mercimek","Nohut"] },
+            a_patates: { tutar: 536.8, urunler: ["Patates"] },
+            b_yerli: { tutar: 146.4, urunler: ["Ayçiçeği (Yağlık)","Mısır (Dane)","Pamuk (Kütlü)"] },
+            b_patatesIlave: { tutar: 244, urunler: ["Patates"] }
+        },
+        sertifikaliFidan: {
+            standart: 488,
+            sertifikali: 1220
+        },
+        organik: {
+            grup1: 292.8,
+            grup2: 146.4,
+            grup3: 97.6
+        },
+        iyiTarim: {
+            ortualti: 414.8,
+            acikta1: 170.8,
+            grup2: 146.4,
+            grup3: 97.6
+        },
+        gubre: 51.24
+    };
+
+    // ========================================================================
+    // MÜNAVEBE (Crop Rotation) — Genişletilmiş
+    // ========================================================================
+    const ROT_MAP = {
+        'tahıl': { hedef: 'baklagil', oneriler: ['Nohut', 'Mercimek', 'Fasulye'] },
+        'endüstriyel': { hedef: 'tahıl', oneriler: ['Buğday', 'Arpa'] },
+        'yağlı': { hedef: 'baklagil', oneriler: ['Soya', 'Nohut', 'Mercimek'] },
+        'baklagil': { hedef: 'tahıl', oneriler: ['Buğday', 'Arpa', 'Mısır (Dane)'] },
+        'sebze': { hedef: 'tahıl veya baklagil', oneriler: ['Buğday', 'Nohut', 'Fasulye'] },
+        'meyve': { hedef: 'aynı (çok yıllık)', oneriler: ['Devam — Çok Yıllık Bitki'] }
+    };
+
+    // ========================================================================
+    // TURKISH MONTH LABELS
+    // ========================================================================
+    const AY_KISA = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+    const AY_UZUN = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+    let state = { page: 'table', filtered: [...TARIM_DATA], curPage: 1, analysis: {}, gddData: null };
+    let charts = {};
+    let map = null, marker = null, baseLayers = {}, areaCircle = null;
+    let currentSearchMode = 'adaparsel';
+
+    // ========================================================================
+    // PAGE SWITCHING
+    // ========================================================================
+    function switchPage(p) {
+        state.page = p;
+        document.getElementById('page-table').classList.toggle('hidden', p !== 'table');
+        document.getElementById('page-analysis').classList.toggle('hidden', p !== 'analysis');
+        // fix button styling
+        const btnT = document.getElementById('btn-page-table');
+        const btnA = document.getElementById('btn-page-analysis');
+        if(p === 'table') {
+            btnT.className = 'px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-active';
+            btnA.className = 'px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-inactive';
+        } else {
+            btnA.className = 'px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-active';
+            btnT.className = 'px-5 py-2 rounded-xl text-[10px] font-black transition-all page-btn-inactive';
+        }
+        // Re-trigger fade-in
+        const target = document.getElementById('page-' + p);
+        target.classList.remove('fade-in');
+        void target.offsetWidth;
+        target.classList.add('fade-in');
+    }
+
+    // ========================================================================
+    // INIT
+    // ========================================================================
+    function init() {
+        const iller = [...new Set(TARIM_DATA.map(d => d.il))].sort((a,b) => a.localeCompare(b,'tr'));
+        const f = document.getElementById('ilFilter');
+        const a = document.getElementById('anaIl');
+        f.innerHTML = '<option value="">Tüm İller</option>';
+        a.innerHTML = '<option value="">İl Seçin</option>';
+        iller.forEach(i => {
+            f.innerHTML += `<option value="${i}">${i}</option>`;
+            a.innerHTML += `<option value="${i}">${i}</option>`;
+        });
+        handleSearch();
+    }
+
+    // ========================================================================
+    // TABLE SEARCH & FILTER
+    // ========================================================================
+    function handleSearch() {
+        const ilF = document.getElementById('ilFilter').value;
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        document.getElementById('btnClearSearch').classList.toggle('hidden', search === '' && ilF === '');
+        state.filtered = TARIM_DATA.filter(d =>
+            (ilF === '' || d.il === ilF) &&
+            (search === '' || d.ilce.toLowerCase().includes(search) || d.urunler.toLowerCase().includes(search) || d.il.toLowerCase().includes(search))
+        );
+        document.getElementById('resultCount').innerText = state.filtered.length;
+        state.curPage = 1;
+        renderTable();
+    }
+
+    function clearFilters() {
+        document.getElementById('ilFilter').value = '';
+        document.getElementById('searchInput').value = '';
+        handleSearch();
+    }
+
+    function highlightText(t, s) {
+        if (!s) return t;
+        const r = new RegExp(`(${s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return t.replace(r, '<span class="highlight">$1</span>');
+    }
+
+    function renderTable() {
+        const b = document.getElementById('tableBody');
+        const s = document.getElementById('searchInput').value.toLowerCase();
+        const start = (state.curPage - 1) * 10;
+        const rows = state.filtered.slice(start, start + 10);
+        if (rows.length === 0) {
+            b.innerHTML = `<tr><td colspan="3" class="px-8 py-10 text-center text-slate-500 font-bold uppercase text-xs">Sonuç Bulunamadı.</td></tr>`;
+            document.getElementById('pagination').innerHTML = '';
+            return;
+        }
+        b.innerHTML = rows.map(r => `
+            <tr class="hover:bg-slate-800/60 transition-colors">
+                <td class="px-6 md:px-8 py-5 font-bold text-slate-200">${highlightText(r.ilce, s)}<br><span class="text-[9px] text-slate-500 uppercase font-black">${highlightText(r.il, s)}</span></td>
+                <td class="px-6 md:px-8 py-5">${r.urunler.split(',').map(u => `<span onclick="analyzeSpecificProduct('${r.il}','${r.ilce}','${u.trim()}')" class="tag tag-clickable">${highlightText(u.trim(), s)}</span>`).join('')}</td>
+                <td class="px-6 md:px-8 py-5 text-center"><button onclick="quickAnaliz('${r.il}','${r.ilce}')" class="bg-green-600/10 text-green-500 px-4 md:px-6 py-2 rounded-xl font-black text-[10px] hover:bg-green-600 hover:text-white transition-all">ANALİZ</button></td>
+            </tr>
+        `).join('');
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const total = Math.ceil(state.filtered.length / 10);
+        const c = document.getElementById('pagination');
+        if (total <= 1) { c.innerHTML = ''; return; }
+        let html = '';
+        const max = 7;
+        let start = Math.max(1, state.curPage - 3);
+        let end = Math.min(total, start + max - 1);
+        if (end - start < max - 1) start = Math.max(1, end - max + 1);
+        if (start > 1) html += `<button onclick="state.curPage=1;renderTable()" class="w-10 h-10 rounded-xl text-[10px] font-black bg-slate-800 text-slate-500">1</button>`;
+        for (let i = start; i <= end; i++) {
+            html += `<button onclick="state.curPage=${i};renderTable()" class="w-10 h-10 rounded-xl text-[10px] font-black ${state.curPage === i ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-500 hover:bg-slate-700'}">${i}</button>`;
+        }
+        c.innerHTML = html;
+    }
+
+    // ========================================================================
+    // CSV EXPORT
+    // ========================================================================
+    function exportCSV() {
+        const BOM = '\uFEFF';
+        let csv = BOM + 'İl;İlçe;Ürünler\n';
+        state.filtered.forEach(r => {
+            csv += `${r.il};${r.ilce};${r.urunler}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tkds_veri_' + new Date().toISOString().slice(0, 10) + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ========================================================================
+    // QUICK ANALYZE
+    // ========================================================================
+    function quickAnaliz(il, ilce) {
+        switchPage('analysis');
+        document.getElementById('anaIl').value = il;
+        updateIlce(il);
+        document.getElementById('anaIlce').value = ilce;
+        updateUrun(ilce);
+        const c = IL_COORD[il] || [39.9, 32.8];
+        document.getElementById('mapBox').classList.remove('hidden');
+        setTimeout(() => initMap(c[0], c[1]), 200);
+    }
+
+    async function analyzeSpecificProduct(il, ilce, urun) {
+        switchPage('analysis');
+        document.getElementById('anaIl').value = il;
+        updateIlce(il);
+        document.getElementById('anaIlce').value = ilce;
+        updateUrun(ilce);
+        document.getElementById('anaUrun').value = urun;
+        const c = IL_COORD[il] || [39.9, 32.8];
+        document.getElementById('mapBox').classList.remove('hidden');
+        setTimeout(() => {
+            initMap(c[0], c[1]);
+            runAnalysisWorkflow();
+        }, 200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('anaIl').onchange = (e) => updateIlce(e.target.value);
+        document.getElementById('anaIlce').onchange = (e) => updateUrun(e.target.value);
+    });
+
+    function updateIlce(il) {
+        const s = document.getElementById('anaIlce');
+        s.innerHTML = '<option value="">İlçe Seçin</option>';
+        TARIM_DATA.filter(d => d.il === il).forEach(d => s.innerHTML += `<option value="${d.ilce}">${d.ilce}</option>`);
+        s.disabled = false;
+        const c = IL_COORD[il];
+        if (c) {
+            document.getElementById('mapBox').classList.remove('hidden');
+            setTimeout(() => {
+                initMap(c[0], c[1]);
+                if (map) map.flyTo(c, 10);
+                updateMarkerPosition(c[0], c[1], "MERKEZ");
+            }, 200);
+        }
+    }
+
+    function updateUrun(ilce) {
+        const s = document.getElementById('anaUrun');
+        s.innerHTML = '<option value="">Ürün Seçin</option>';
+        const r = TARIM_DATA.find(d => d.ilce === ilce);
+        if (r) {
+            r.urunler.split(',').forEach(u => s.innerHTML += `<option value="${u.trim()}">${u.trim()}</option>`);
+            s.disabled = false;
+        }
+    }
+
+    // ========================================================================
+    // SEARCH MODAL
+    // ========================================================================
+    function toggleSearchPanel(show) { document.getElementById('searchModal').classList.toggle('hidden', !show); }
+    function switchSearchTab(mode) {
+        currentSearchMode = mode;
+        ['adaparsel', 'adres', 'koordinat'].forEach(m => {
+            document.getElementById(`s-tab-${m}`).classList.toggle('active', m === mode);
+            document.getElementById(`s-content-${m}`).classList.toggle('hidden', m !== mode);
+        });
+    }
+
+    async function runAdvancedSearch(mode) {
+        const il = document.getElementById('anaIl').value;
+        const ilce = document.getElementById('anaIlce').value;
+        if (mode === 'adaparsel') {
+            const mah = document.getElementById('sInpMahalle').value;
+            const ada = document.getElementById('sInpAda').value;
+            const par = document.getElementById('sInpParsel').value;
+            if (mah) await geocodeAndFly(`${mah}, ${ilce}, ${il}, Turkey`, "ADA/PARSEL");
+            document.getElementById('dispAdaParsel').innerText = `${ada || '--'} / ${par || '--'}`;
+            document.getElementById('dispMahalle').innerText = mah || "--";
+            if (il && ilce && mah && ada && par) {
+                document.getElementById('tkgmExternalLink').href = `https://parselsorgu.tkgm.gov.tr/#tip=parsel&il=${il}&ilce=${ilce}&mahalle=${mah}&ada=${ada}&parsel=${par}`;
+            }
+            toggleSearchPanel(false);
+        } else if (mode === 'adres') {
+            const adr = document.getElementById('sInpAdres').value;
+            if (adr) await geocodeAndFly(adr, "ADRES");
+        } else if (mode === 'koordinat') {
+            const lat = parseFloat(document.getElementById('sInpLat').value);
+            const lon = parseFloat(document.getElementById('sInpLon').value);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                map.flyTo([lat, lon], 16);
+                updateMarkerPosition(lat, lon, "GPS");
+                toggleSearchPanel(false);
+            }
+        }
+    }
+
+    async function geocodeAndFly(q, src) {
+        try {
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`);
+            const d = await r.json();
+            if (d.length > 0) {
+                map.flyTo([d[0].lat, d[0].lon], 15);
+                updateMarkerPosition(d[0].lat, d[0].lon, src);
+                toggleSearchPanel(false);
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    // ========================================================================
+    // LOADING OVERLAY
+    // ========================================================================
+    function showLoading(msg) {
+        const ov = document.getElementById('loadingOverlay');
+        ov.querySelector('p').textContent = msg || 'Veriler yükleniyor...';
+        ov.classList.remove('hidden');
+    }
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    // ========================================================================
+    // MAIN ANALYSIS WORKFLOW
+    // ========================================================================
+    async function runAnalysisWorkflow() {
+        const b = document.getElementById('btnRunAnaliz');
+        const il = document.getElementById('anaIl').value;
+        const ur = document.getElementById('anaUrun').value;
+        if (!il || !ur) return;
+
+        let lat, lon;
+        if (marker) {
+            const p = marker.getLatLng();
+            lat = p.lat; lon = p.lng;
+        } else {
+            const c = IL_COORD[il] || [39.9, 32.8];
+            lat = c[0]; lon = c[1];
+        }
+
+        b.disabled = true;
+        b.innerHTML = '<div class="loader mx-auto"></div>';
+        showLoading('Meteoroloji ve tarımsal veriler analiz ediliyor...');
+
+        try {
+            // Fetch forecast (7 days)
+            const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_max,weather_code&hourly=soil_moisture_0_to_1cm&timezone=auto`;
+            const forecastRes = await fetch(forecastUrl);
+            const forecast = await forecastRes.json();
+
+            // Fetch historical 90 days for GDD
+            const today = new Date();
+            const end = today.toISOString().slice(0, 10);
+            const start90 = new Date(today.getTime() - 90 * 86400000).toISOString().slice(0, 10);
+            const histUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${start90}&end_date=${end}&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+            const histRes = await fetch(histUrl);
+            const historical = await histRes.json();
+
+            state.analysis = { il, urun: ur, forecast, historical, lat, lon };
+            renderAnalysisUI();
+            initMap(lat, lon);
+        } catch (e) {
+            console.error('Analiz hatası:', e);
+        } finally {
+            b.disabled = false;
+            b.innerText = 'Sistemi Çalıştır';
+            hideLoading();
+        }
+    }
+
+    // ========================================================================
+    // GDD CALCULATION
+    // ========================================================================
+    function calculateGDD(historical, tbase) {
+        if (!historical?.daily?.temperature_2m_max) return { gdd: 0, days: 0 };
+        let cumGDD = 0;
+        const tmax = historical.daily.temperature_2m_max;
+        const tmin = historical.daily.temperature_2m_min;
+        for (let i = 0; i < tmax.length; i++) {
+            if (tmax[i] !== null && tmin[i] !== null) {
+                const avg = (tmax[i] + tmin[i]) / 2;
+                cumGDD += Math.max(0, avg - (tbase || 10));
+            }
+        }
+        return { gdd: Math.round(cumGDD), days: tmax.length };
+    }
+
+    // ========================================================================
+    // PHENOLOGICAL STAGE
+    // ========================================================================
+    function getPhenoStage(pct) {
+        if (pct < 10) return 'Çimlenme / Uyanma';
+        if (pct < 25) return 'Fide / Sürgün';
+        if (pct < 45) return 'Vejetatif Büyüme';
+        if (pct < 65) return 'Çiçeklenme';
+        if (pct < 80) return 'Meyve / Dane Dolumu';
+        if (pct < 95) return 'Olgunlaşma';
+        return 'Hasat Zamanı';
+    }
+
+    // ========================================================================
+    // NDVI SIMULATION (Realistic curves)
+    // ========================================================================
+    function generateNDVI(product) {
+        const u = AGRO_DB[product];
+        if (!u) return { labels: AY_KISA, data: Array(12).fill(0.3), healthy: Array(12).fill(0.7), stress: Array(12).fill(0.3) };
+
+        const isPerennial = u.type === 'meyve';
+        const plant = u.plantMonth - 1; // 0-indexed
+        const harvest = u.harvestMonth - 1;
+        const data = [];
+        const healthy = [];
+        const stress = [];
+
+        for (let m = 0; m < 12; m++) {
+            stress.push(0.25);
+            healthy.push(0.75);
+
+            if (isPerennial) {
+                // Perennials: moderate NDVI year-round, peak in summer
+                const base = 0.3;
+                const peak = 0.78;
+                // Peak around June-August
+                const dist = Math.min(Math.abs(m - 6), 12 - Math.abs(m - 6));
+                const val = peak - (dist / 6) * (peak - base);
+                data.push(Math.round(Math.max(0.2, val) * 100) / 100);
+            } else {
+                // Annual crops: dormant before planting, rise to peak, decline after harvest
+                let growStart = plant;
+                let growEnd = harvest;
+                if (growEnd < growStart) growEnd += 12;
+                let mAdj = m;
+                if (mAdj < growStart && growEnd > 11) mAdj += 12;
+
+                if (mAdj >= growStart && mAdj <= growEnd) {
+                    const duration = growEnd - growStart;
+                    const pos = (mAdj - growStart) / duration;
+                    // Bell curve shape
+                    const val = 0.2 + 0.6 * Math.sin(pos * Math.PI);
+                    data.push(Math.round(val * 100) / 100);
+                } else {
+                    data.push(0.15);
+                }
+            }
+        }
+
+        return { labels: AY_KISA, data, healthy, stress };
+    }
+
+    // ========================================================================
+    // EARLY WARNING SYSTEM
+    // ========================================================================
+    function generateAlerts(forecast) {
+        const alerts = [];
+        const daily = forecast.daily;
+        if (!daily) return alerts;
+
+        for (let i = 0; i < daily.time.length; i++) {
+            const tmin = daily.temperature_2m_min?.[i];
+            const tmax = daily.temperature_2m_max?.[i];
+            const precip = daily.precipitation_sum?.[i];
+            const wind = daily.wind_speed_10m_max?.[i];
+            const hum = daily.relative_humidity_2m_max?.[i];
+            const date = daily.time[i];
+
+            if (tmin !== null && tmin < 0) {
+                alerts.push({ type: 'red', icon: '🥶', title: 'DON RİSKİ', desc: `${date}: Min sıcaklık ${tmin.toFixed(1)}°C — bitki donması tehlikesi`, priority: 1 });
+            }
+            if (tmax !== null && tmax > 38) {
+                alerts.push({ type: 'orange', icon: '🔥', title: 'SICAKLIK STRESİ', desc: `${date}: Max sıcaklık ${tmax.toFixed(1)}°C — ısı stresi riski`, priority: 2 });
+            }
+            if (precip !== null && precip > 30) {
+                alerts.push({ type: 'orange', icon: '🌊', title: 'AŞIRI YAĞIŞ', desc: `${date}: ${precip.toFixed(1)} mm yağış — sel/su basması riski`, priority: 2 });
+            }
+            if (wind !== null && wind > 50) {
+                alerts.push({ type: 'yellow', icon: '💨', title: 'RÜZGAR UYARISI', desc: `${date}: ${wind.toFixed(0)} km/s rüzgar — mekanik hasar riski`, priority: 3 });
+            }
+            if (hum !== null && hum > 90) {
+                alerts.push({ type: 'blue', icon: '🦠', title: 'NEM — HASTALIK RİSKİ', desc: `${date}: %${hum.toFixed(0)} nem — fungal hastalık riski yüksek`, priority: 3 });
+            }
+        }
+
+        // Drought check: total 7-day precip < 2mm and avg max > 30
+        const totalPrecip = daily.precipitation_sum?.reduce((a, b) => a + (b || 0), 0) || 0;
+        const avgMax = daily.temperature_2m_max ? daily.temperature_2m_max.reduce((a, b) => a + (b || 0), 0) / daily.temperature_2m_max.length : 0;
+        if (totalPrecip < 2 && avgMax > 30) {
+            alerts.push({ type: 'red', icon: '☀️', title: 'KURAKLIK UYARISI', desc: `7 günlük toplam yağış: ${totalPrecip.toFixed(1)} mm, ort. max: ${avgMax.toFixed(1)}°C — sulama acil`, priority: 1 });
+        }
+
+        // Sort by priority
+        alerts.sort((a, b) => a.priority - b.priority);
+        return alerts;
+    }
+
+    // ========================================================================
+    // GOVERNMENT SUPPORT CALCULATION
+    // ========================================================================
+    function calculateSupports(product, area) {
+        const supports = [];
+        const S = SUPPORT_2025;
+        area = area || 1;
+
+        // Temel Destek
+        let temelTutar = 0;
+        for (const k of ['kat1','kat2','kat3','kat4']) {
+            if (S.temelDestek[k].urunler.some(u => u === product)) {
+                temelTutar = S.temelDestek[k].tutar;
+                supports.push({ baslik: 'Temel Destek', tutar: temelTutar, birim: 'TL/da', kat: `Kategori ${k.slice(-1)} (×${S.temelDestek[k].katsayi})`, renk: '#22c55e' });
+                break;
+            }
+        }
+
+        // Planlı Üretim
+        for (const k of ['kat1','kat2','kat3','kat4']) {
+            if (S.planliUretim[k].urunler.some(u => u === product)) {
+                supports.push({ baslik: 'Planlı Üretim Desteği', tutar: S.planliUretim[k].tutar, birim: 'TL/da', kat: `Kategori ${k.slice(-1)}`, renk: '#3b82f6' });
+                break;
+            }
+        }
+
+        // Sertifikalı Tohum
+        for (const [key, val] of Object.entries(S.sertifikaliTohum)) {
+            if (val.urunler.some(u => u === product)) {
+                const label = key.startsWith('a_') ? 'Sertifikalı Tohum (A)' : (key.startsWith('b_') ? 'Sertifikalı Tohum (B-Yerli)' : 'Sertifikalı Tohum');
+                supports.push({ baslik: label, tutar: val.tutar, birim: 'TL/da', kat: '', renk: '#8b5cf6' });
+            }
+        }
+
+        // Fidan (only for fruit)
+        const u = AGRO_DB[product];
+        if (u && u.type === 'meyve') {
+            supports.push({ baslik: 'Sertifikalı Fidan Desteği', tutar: S.sertifikaliFidan.sertifikali, birim: 'TL/da', kat: 'C-Sertifikalı', renk: '#ec4899' });
+        }
+
+        // Gübre
+        supports.push({ baslik: 'Katı Organik-Organomineral Gübre', tutar: S.gubre, birim: 'TL/da', kat: '', renk: '#f97316' });
+
+        // İyi Tarım
+        if (u && u.type === 'sebze') {
+            supports.push({ baslik: 'İyi Tarım (Örtüaltı)', tutar: S.iyiTarim.ortualti, birim: 'TL/da', kat: 'Bireysel', renk: '#06b6d4' });
+        } else {
+            supports.push({ baslik: 'İyi Tarım (Açıkta 1. Grup)', tutar: S.iyiTarim.acikta1, birim: 'TL/da', kat: 'Bireysel', renk: '#06b6d4' });
+        }
+
+        // Organik
+        supports.push({ baslik: 'Organik Tarım (1. Grup)', tutar: S.organik.grup1, birim: 'TL/da', kat: 'Bireysel', renk: '#84cc16' });
+
+        return supports;
+    }
+
+    // ========================================================================
+    // RENDER ANALYSIS UI
+    // ========================================================================
+    function renderAnalysisUI() {
+        const { forecast, historical, urun, lat, lon } = state.analysis;
+        const u = AGRO_DB[urun] || { targetGDD: 1500, type: 'tahıl', yield: 500, price: 10, tbase: 10, disease: 'Bilinmiyor', plantMonth: 3, harvestMonth: 9 };
+
+        document.getElementById('analysisEmpty').classList.add('hidden');
+        document.getElementById('analysisContent').classList.remove('hidden');
+
+        // Re-trigger fade
+        const ac = document.getElementById('analysisContent');
+        ac.classList.remove('fade-in');
+        void ac.offsetWidth;
+        ac.classList.add('fade-in');
+
+        // GDD calculation
+        const tbase = u.tbase || 10;
+        const gddResult = calculateGDD(historical, tbase);
+        const gddPct = Math.min(100, Math.round((gddResult.gdd / u.targetGDD) * 100));
+        const phenoStage = getPhenoStage(gddPct);
+
+        safeSetText('sumPheno', `${phenoStage} (%${gddPct})`);
+        document.getElementById('phenoProgress').style.width = gddPct + '%';
+
+        // Support calculation
+        const area = parseFloat(document.getElementById('eArea').value) || 10;
+        const supports = calculateSupports(urun, area);
+        const totalGov = supports.reduce((a, s) => a + s.tutar, 0);
+        safeSetText('sumGov', Math.round(totalGov).toLocaleString('tr-TR') + ' ₺/da');
+
+        // NDVI
+        const ndviData = generateNDVI(urun);
+        const curMonth = new Date().getMonth();
+        const curNDVI = ndviData.data[curMonth];
+        safeSetText('sumNDVI', curNDVI.toFixed(2));
+
+        // Rotation
+        const rot = ROT_MAP[u.type] || { hedef: 'tahıl', oneriler: ['Buğday'] };
+        safeSetText('sumRot', `${rot.hedef}: ${rot.oneriler.slice(0, 2).join(', ')}`);
+
+        // Set price
+        document.getElementById('ePrice').value = u.price;
+
+        // Alerts
+        renderAlerts(forecast);
+
+        // Charts
+        renderAllCharts(forecast, ndviData, supports, u, gddResult);
+
+        // Spray widget
+        const wind0 = forecast.daily?.wind_speed_10m_max?.[0] || 0;
+        const sprayOk = wind0 < 15;
+        document.getElementById('sprayWidget').innerHTML = `
+            <div class="p-4 rounded-xl border ${sprayOk ? 'border-green-800 bg-green-950/30' : 'border-red-800 bg-red-950/30'}">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[11px] font-bold ${sprayOk ? 'text-green-400' : 'text-red-400'} uppercase">${sprayOk ? '✅ İlaçlamaya Uygun' : '⚠️ Rüzgar Riski — İlaçlama Yapılmamalı'}</span>
+                    <span class="text-[10px] text-slate-500 font-bold">${wind0.toFixed(0)} km/s</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Hastalık riski: <span class="text-yellow-500 font-bold">${u.disease || 'Bilinmiyor'}</span></div>
+            </div>
+        `;
+
+        // Pheno info
+        document.getElementById('phenoInfo').innerHTML = `
+            <div class="p-4 bg-slate-800 rounded-xl border border-slate-700 space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-[10px] text-slate-500 uppercase font-bold">Birikmiş GDD (90 gün)</span>
+                    <span class="text-sm font-black text-green-400">${gddResult.gdd.toLocaleString('tr-TR')}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[10px] text-slate-500 uppercase font-bold">Hedef GDD</span>
+                    <span class="text-sm font-black text-white">${u.targetGDD.toLocaleString('tr-TR')}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[10px] text-slate-500 uppercase font-bold">Tbase</span>
+                    <span class="text-sm font-black text-white">${tbase}°C</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[10px] text-slate-500 uppercase font-bold">Fenolojik Aşama</span>
+                    <span class="text-[11px] font-black text-green-400">${phenoStage}</span>
+                </div>
+                <div class="text-[9px] text-slate-600 mt-2 border-t border-slate-700 pt-2">GDD = Σ max(0, (Tmax+Tmin)/2 − Tbase) — Son 90 günlük Open-Meteo verisi ile hesaplandı</div>
+            </div>
+        `;
+
+        // Gov tab
+        renderGovTab(supports, urun);
+
+        // Financial
+        updateFinancials();
+
+        // Weather strip
+        renderWeatherStrip(forecast);
+
+        // Map area circle
+        updateAreaCircle();
+
+        // Show TKGM link
+        const ada = document.getElementById('inpAda').value;
+        const parsel = document.getElementById('inpParsel').value;
+        if (ada && parsel) {
+            const il = document.getElementById('anaIl').value;
+            const ilce = document.getElementById('anaIlce').value;
+            document.getElementById('tkgmExternalLink').href = `https://parselsorgu.tkgm.gov.tr/#tip=parsel&il=${il}&ilce=${ilce}&ada=${ada}&parsel=${parsel}`;
+        }
+    }
+
+    function safeSetText(id, t) { const e = document.getElementById(id); if (e) e.innerText = t; }
+
+    // ========================================================================
+    // ALERTS RENDERING
+    // ========================================================================
+    function renderAlerts(forecast) {
+        const alerts = generateAlerts(forecast);
+        const container = document.getElementById('criticalAlarms');
+        if (alerts.length === 0) {
+            container.innerHTML = `<div class="p-4 rounded-2xl border border-green-800 bg-green-950/30 flex items-center gap-3">
+                <span class="text-2xl">✅</span>
+                <div><p class="text-green-400 font-black text-xs uppercase">Kritik Uyarı Yok</p><p class="text-green-600 text-[10px]">Önümüzdeki 7 gün için risk tespit edilmedi</p></div>
+            </div>`;
+            return;
+        }
+        container.innerHTML = alerts.slice(0, 5).map(a => `
+            <div class="p-4 rounded-2xl alert-${a.type} flex items-start gap-3">
+                <span class="text-xl">${a.icon}</span>
+                <div>
+                    <p class="text-white font-black text-xs uppercase">${a.title}</p>
+                    <p class="text-slate-300 text-[10px] mt-1">${a.desc}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ========================================================================
+    // GOVERNMENT SUPPORT TAB
+    // ========================================================================
+    function renderGovTab(supports, product) {
+        const govList = document.getElementById('govList');
+        const area = parseFloat(document.getElementById('eArea').value) || 10;
+        let html = `<h4 class="text-sm font-black text-slate-300 uppercase mb-4">📋 ${product} — 2025-2027 Dönemi Destekleri</h4>`;
+        html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+
+        supports.forEach(s => {
+            html += `
+                <div class="support-card">
+                    <h5 style="color:${s.renk}">${s.baslik}</h5>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-lg font-black text-white">${s.tutar.toLocaleString('tr-TR')} <span class="text-[10px] text-slate-500">${s.birim}</span></p>
+                            ${s.kat ? `<p class="text-[9px] text-slate-500 mt-1">${s.kat}</p>` : ''}
+                        </div>
+                        <p class="text-[10px] text-slate-500">${area} da = <span class="font-bold text-white">${(s.tutar * area).toLocaleString('tr-TR')} ₺</span></p>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+
+        const totalPerDa = supports.reduce((a, s) => a + s.tutar, 0);
+        html += `
+            <div class="mt-4 p-4 bg-green-950/30 border border-green-800 rounded-2xl flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] text-green-600 font-bold uppercase">Toplam Potansiyel Destek</p>
+                    <p class="text-[9px] text-slate-500 mt-1">Tüm destekler aynı anda alınamayabilir — koşullar farklılık gösterir</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xl font-black text-green-400">${Math.round(totalPerDa).toLocaleString('tr-TR')} ₺/da</p>
+                    <p class="text-[10px] text-slate-400">${area} da = <span class="font-bold">${Math.round(totalPerDa * area).toLocaleString('tr-TR')} ₺</span></p>
+                </div>
+            </div>
+        `;
+
+        govList.innerHTML = html;
+
+        // Show IPARD info
+        document.getElementById('ipardInfo').classList.remove('hidden');
+
+        // Gov chart
+        renderGovChart(supports);
+    }
+
+    // ========================================================================
+    // FINANCIAL ANALYSIS
+    // ========================================================================
+    function updateFinancials() {
+        const ur = state.analysis.urun;
+        if (!ur) return;
+        const u = AGRO_DB[ur] || { yield: 500, price: 10 };
+        const area = parseFloat(document.getElementById('eArea').value) || 1;
+        const price = parseFloat(document.getElementById('ePrice').value) || u.price;
+        const totalCostPerDa = parseFloat(document.getElementById('eCost').value) || 3800;
+
+        const supports = calculateSupports(ur, area);
+        const totalGovPerDa = supports.reduce((a, s) => a + s.tutar, 0);
+
+        const brutGelirPerDa = u.yield * price;
+        const toplamDestekPerDa = totalGovPerDa;
+        const toplamGelirPerDa = brutGelirPerDa + toplamDestekPerDa;
+        const netKarPerDa = toplamGelirPerDa - totalCostPerDa;
+        const basabasVerim = totalCostPerDa / price;
+
+        const totalNetKar = netKarPerDa * area;
+        safeSetText('sumProfit', totalNetKar.toLocaleString('tr-TR', { maximumFractionDigits: 0 }) + ' ₺');
+
+        // Cost breakdown
+        const costs = {
+            'Mazot': Math.round(totalCostPerDa * 0.25),
+            'Gübre': Math.round(totalCostPerDa * 0.22),
+            'Tohum/Fide': Math.round(totalCostPerDa * 0.15),
+            'İlaç': Math.round(totalCostPerDa * 0.12),
+            'Sulama': Math.round(totalCostPerDa * 0.14),
+            'Hasat+Diğer': Math.round(totalCostPerDa * 0.12)
+        };
+
+        // Summary cards
+        document.getElementById('ecoSummaryCards').innerHTML = `
+            <div class="p-3 rounded-xl bg-green-950/30 border border-green-800">
+                <p class="text-[8px] font-black text-green-600 uppercase">Brüt Gelir</p>
+                <p class="text-sm font-black text-green-400">${(brutGelirPerDa * area).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</p>
+                <p class="text-[9px] text-slate-500">${brutGelirPerDa.toLocaleString('tr-TR')} ₺/da</p>
+            </div>
+            <div class="p-3 rounded-xl bg-orange-950/30 border border-orange-800">
+                <p class="text-[8px] font-black text-orange-600 uppercase">Toplam Destek</p>
+                <p class="text-sm font-black text-orange-400">${(toplamDestekPerDa * area).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</p>
+                <p class="text-[9px] text-slate-500">${Math.round(toplamDestekPerDa).toLocaleString('tr-TR')} ₺/da</p>
+            </div>
+            <div class="p-3 rounded-xl bg-red-950/30 border border-red-800">
+                <p class="text-[8px] font-black text-red-600 uppercase">Toplam Gider</p>
+                <p class="text-sm font-black text-red-400">${(totalCostPerDa * area).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</p>
+                <p class="text-[9px] text-slate-500">${totalCostPerDa.toLocaleString('tr-TR')} ₺/da</p>
+            </div>
+            <div class="p-3 rounded-xl ${netKarPerDa >= 0 ? 'bg-emerald-950/30 border-emerald-800' : 'bg-red-950/50 border-red-700'} border">
+                <p class="text-[8px] font-black ${netKarPerDa >= 0 ? 'text-emerald-600' : 'text-red-600'} uppercase">Net Kâr</p>
+                <p class="text-sm font-black ${netKarPerDa >= 0 ? 'text-emerald-400' : 'text-red-400'}">${(totalNetKar).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</p>
+                <p class="text-[9px] text-slate-500">Başabaş: ${basabasVerim.toFixed(0)} kg/da</p>
+            </div>
+        `;
+
+        // Cost breakdown chips
+        const costColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'];
+        document.getElementById('costBreakdown').innerHTML = Object.entries(costs).map(([k, v], i) => `
+            <div class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-center">
+                <p class="text-[8px] font-bold text-slate-500 uppercase">${k}</p>
+                <p class="text-xs font-black" style="color:${costColors[i]}">${v.toLocaleString('tr-TR')} ₺</p>
+            </div>
+        `).join('');
+
+        // Financial charts
+        renderEcoCharts(brutGelirPerDa, toplamDestekPerDa, totalCostPerDa, netKarPerDa, area, costs);
+    }
+
+    // ========================================================================
+    // CHART RENDERING
+    // ========================================================================
+    function destroy(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+    const trLocale = {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        let val = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed;
+                        if (typeof val === 'number') val = val.toLocaleString('tr-TR', { maximumFractionDigits: 1 });
+                        return ctx.dataset.label + ': ' + val;
+                    }
+                }
+            }
+        }
+    };
+
+    const chartDefaults = {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 10, weight: 'bold' } } },
+            tooltip: {
+                backgroundColor: '#1e293b',
+                titleColor: '#f1f5f9',
+                bodyColor: '#94a3b8',
+                borderColor: '#334155',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(ctx) {
+                        let val = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed;
+                        if (typeof val === 'number') val = val.toLocaleString('tr-TR', { maximumFractionDigits: 1 });
+                        return (ctx.dataset.label || '') + ': ' + val;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } },
+            y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }
+        }
+    };
+
+    function renderAllCharts(forecast, ndviData, supports, product, gddResult) {
+        renderNDVIChart(ndviData);
+        renderTempChart(forecast);
+        renderRainChart(forecast);
+        renderHumidityChart(forecast);
+        renderSoilMoistureChart(forecast);
+    }
+
+    function renderNDVIChart(ndviData) {
+        destroy('chartNDVI');
+        const c = document.getElementById('chartNDVI');
+        if (!c) return;
+        const curMonth = new Date().getMonth();
+        charts['chartNDVI'] = new Chart(c, {
+            type: 'line',
+            data: {
+                labels: ndviData.labels,
+                datasets: [
+                    {
+                        label: 'NDVI',
+                        data: ndviData.data,
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34,197,94,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: ndviData.data.map((_, i) => i === curMonth ? 6 : 2),
+                        pointBackgroundColor: ndviData.data.map((_, i) => i === curMonth ? '#22c55e' : '#334155'),
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Sağlıklı Eşik',
+                        data: ndviData.healthy,
+                        borderColor: 'rgba(34,197,94,0.3)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Stres Eşiği',
+                        data: ndviData.stress,
+                        borderColor: 'rgba(239,68,68,0.3)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    title: { display: true, text: '12 Aylık NDVI Simülasyonu', color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                }
+            }
+        });
+    }
+
+    function renderTempChart(forecast) {
+        destroy('chartTemp');
+        const c = document.getElementById('chartTemp');
+        if (!c || !forecast.daily) return;
+        const labels = forecast.daily.time.map(t => { const d = new Date(t); return d.getDate() + ' ' + AY_KISA[d.getMonth()]; });
+        charts['chartTemp'] = new Chart(c, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Max °C', data: forecast.daily.temperature_2m_max, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3 },
+                    { label: 'Min °C', data: forecast.daily.temperature_2m_min, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3 }
+                ]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    title: { display: true, text: '7 Günlük Sıcaklık Tahmini', color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                }
+            }
+        });
+    }
+
+    function renderRainChart(forecast) {
+        destroy('chartRain');
+        const c = document.getElementById('chartRain');
+        if (!c || !forecast.daily) return;
+        const labels = forecast.daily.time.map(t => { const d = new Date(t); return d.getDate() + ' ' + AY_KISA[d.getMonth()]; });
+        charts['chartRain'] = new Chart(c, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Yağış (mm)',
+                    data: forecast.daily.precipitation_sum,
+                    backgroundColor: forecast.daily.precipitation_sum.map(v => v > 30 ? '#ef4444' : v > 10 ? '#f97316' : '#60a5fa'),
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    title: { display: true, text: '7 Günlük Yağış Tahmini', color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                }
+            }
+        });
+    }
+
+    function renderHumidityChart(forecast) {
+        destroy('chartHumidity');
+        const c = document.getElementById('chartHumidity');
+        if (!c || !forecast.daily?.relative_humidity_2m_max) return;
+        const labels = forecast.daily.time.map(t => { const d = new Date(t); return d.getDate() + ' ' + AY_KISA[d.getMonth()]; });
+        charts['chartHumidity'] = new Chart(c, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Max Nem (%)',
+                    data: forecast.daily.relative_humidity_2m_max,
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6,182,212,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2,
+                    pointRadius: 3
+                }, {
+                    label: 'Hastalık Eşiği',
+                    data: Array(labels.length).fill(90),
+                    borderColor: 'rgba(239,68,68,0.4)',
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    title: { display: true, text: 'Bağıl Nem', color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                }
+            }
+        });
+    }
+
+    function renderSoilMoistureChart(forecast) {
+        destroy('chartSoilMoisture');
+        const c = document.getElementById('chartSoilMoisture');
+        if (!c) return;
+        // Use hourly soil moisture data if available
+        if (forecast.hourly?.soil_moisture_0_to_1cm) {
+            const raw = forecast.hourly.soil_moisture_0_to_1cm;
+            const times = forecast.hourly.time;
+            // Sample every 6 hours
+            const sampled = []; const sampledLabels = [];
+            for (let i = 0; i < raw.length; i += 6) {
+                sampled.push(raw[i]);
+                const d = new Date(times[i]);
+                sampledLabels.push(d.getDate() + ' ' + AY_KISA[d.getMonth()] + ' ' + d.getHours() + ':00');
+            }
+            charts['chartSoilMoisture'] = new Chart(c, {
+                type: 'line',
+                data: {
+                    labels: sampledLabels,
+                    datasets: [{
+                        label: 'Toprak Nemi (m³/m³)',
+                        data: sampled,
+                        borderColor: '#a78bfa',
+                        backgroundColor: 'rgba(167,139,250,0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 1
+                    }]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: { display: true, text: 'Toprak Nemi (0-1cm)', color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                    }
+                }
+            });
+        } else {
+            // Placeholder
+            charts['chartSoilMoisture'] = new Chart(c, {
+                type: 'line',
+                data: { labels: ['Veri Yok'], datasets: [{ label: 'Toprak Nemi', data: [0], borderColor: '#a78bfa' }] },
+                options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, title: { display: true, text: 'Toprak Nemi — Veri Bekleniyor', color: '#64748b', font: { size: 11 } } } }
+            });
+        }
+    }
+
+    function renderGovChart(supports) {
+        destroy('chartGov');
+        const c = document.getElementById('chartGov');
+        if (!c) return;
+        const colors = supports.map(s => s.renk);
+        charts['chartGov'] = new Chart(c, {
+            type: 'bar',
+            data: {
+                labels: supports.map(s => s.baslik.length > 20 ? s.baslik.slice(0, 20) + '...' : s.baslik),
+                datasets: [{
+                    label: 'Destek (₺/da)',
+                    data: supports.map(s => s.tutar),
+                    backgroundColor: colors,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                indexAxis: 'y',
+                plugins: {
+                    ...chartDefaults.plugins,
+                    title: { display: true, text: 'Destek Kalemleri Karşılaştırması (₺/da)', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    function renderEcoCharts(brutGelir, destek, gider, netKar, area, costs) {
+        destroy('chartEco');
+        destroy('chartCostPie');
+
+        const c1 = document.getElementById('chartEco');
+        if (c1) {
+            charts['chartEco'] = new Chart(c1, {
+                type: 'bar',
+                data: {
+                    labels: ['Brüt Gelir', 'Destek', 'Gider', 'Net Kâr'],
+                    datasets: [{
+                        label: '₺/da',
+                        data: [brutGelir, destek, gider, netKar],
+                        backgroundColor: ['#22c55e', '#f97316', '#ef4444', netKar >= 0 ? '#8b5cf6' : '#dc2626'],
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    ...chartDefaults,
+                    plugins: {
+                        ...chartDefaults.plugins,
+                        title: { display: true, text: 'Gelir-Gider Analizi (₺/da)', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        const c2 = document.getElementById('chartCostPie');
+        if (c2) {
+            const costLabels = Object.keys(costs);
+            const costValues = Object.values(costs);
+            const pieColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'];
+            charts['chartCostPie'] = new Chart(c2, {
+                type: 'doughnut',
+                data: {
+                    labels: costLabels,
+                    datasets: [{
+                        data: costValues,
+                        backgroundColor: pieColors,
+                        borderColor: '#0f172a',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 9, weight: 'bold' }, padding: 12, usePointStyle: true, pointStyle: 'circle' } },
+                        title: { display: true, text: 'Gider Dağılımı (₺/da)', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#f1f5f9',
+                            bodyColor: '#94a3b8',
+                            callbacks: {
+                                label: function(ctx) { return ctx.label + ': ' + ctx.parsed.toLocaleString('tr-TR') + ' ₺'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // ========================================================================
+    // WEATHER STRIP
+    // ========================================================================
+    function renderWeatherStrip(forecast) {
+        const ws = document.getElementById('weatherStrip');
+        if (!ws || !forecast.daily) return;
+        const codes = { 0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️', 45:'🌫️', 48:'🌫️', 51:'🌦️', 53:'🌧️', 55:'🌧️', 61:'🌧️', 63:'🌧️', 65:'🌧️', 71:'🌨️', 73:'🌨️', 75:'❄️', 80:'🌦️', 81:'🌧️', 82:'⛈️', 95:'⛈️', 96:'⛈️', 99:'⛈️' };
+        ws.innerHTML = forecast.daily.time.map((t, i) => {
+            const d = new Date(t);
+            const wc = forecast.daily.weather_code?.[i] || 0;
+            const icon = codes[wc] || '🌤️';
+            const tmax = forecast.daily.temperature_2m_max[i];
+            const tmin = forecast.daily.temperature_2m_min[i];
+            const rain = forecast.daily.precipitation_sum[i];
+            return `
+                <div class="flex-shrink-0 p-4 rounded-2xl bg-slate-800 border border-slate-700 text-center min-w-[90px]">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase">${d.getDate()} ${AY_KISA[d.getMonth()]}</p>
+                    <p class="text-2xl my-2">${icon}</p>
+                    <p class="text-[10px] font-black"><span class="text-red-400">${tmax?.toFixed(0) || '--'}°</span> / <span class="text-blue-400">${tmin?.toFixed(0) || '--'}°</span></p>
+                    <p class="text-[9px] text-cyan-400 font-bold">${rain?.toFixed(1) || '0'} mm</p>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ========================================================================
+    // MAP
+    // ========================================================================
+    function initMap(lat, lon) {
+        if (typeof L === 'undefined') return;
+        if (map) {
+            map.flyTo([lat, lon], 12);
+            updateMarkerPosition(lat, lon, "KONUM");
+            return;
+        }
+        map = L.map('mapContainer', { zoomControl: false }).setView([lat, lon], 12);
+        baseLayers.street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+        marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+
+        // Popup
+        const urun = document.getElementById('anaUrun')?.value || '';
+        marker.bindPopup(`<b>${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E</b><br>${urun ? 'Ürün: ' + urun : ''}`);
+
+        marker.on('dragend', () => {
+            const p = marker.getLatLng();
+            updateCoordDisplay(p.lat, p.lng, "SEÇİM");
+            updateMarkerPopup();
+        });
+        map.on('click', (e) => {
+            updateMarkerPosition(e.latlng.lat, e.latlng.lng, "SEÇİM");
+            updateMarkerPopup();
+        });
+        updateCoordDisplay(lat, lon, "MERKEZ");
+    }
+
+    function updateMarkerPosition(lat, lon, s) {
+        if (marker) {
+            marker.setLatLng([lat, lon]);
+            updateCoordDisplay(lat, lon, s);
+        }
+    }
+
+    function updateCoordDisplay(lat, lon, s) {
+        safeSetText('mapCoord', `${lat.toFixed(6)}°N | ${lon.toFixed(6)}°E`);
+    }
+
+    function updateMarkerPopup() {
+        if (!marker) return;
+        const p = marker.getLatLng();
+        const urun = document.getElementById('anaUrun')?.value || '';
+        marker.setPopupContent(`<b>${p.lat.toFixed(4)}°N, ${p.lng.toFixed(4)}°E</b><br>${urun ? 'Ürün: ' + urun : ''}`);
+    }
+
+    function updateAreaCircle() {
+        if (!map || !marker) return;
+        const area = parseFloat(document.getElementById('eArea').value) || 10;
+        // 1 dekar = 1000 m², circle area = π*r² → r = sqrt(area*1000/π)
+        const radiusM = Math.sqrt(area * 1000 / Math.PI);
+        const p = marker.getLatLng();
+
+        if (areaCircle) map.removeLayer(areaCircle);
+        areaCircle = L.circle([p.lat, p.lng], {
+            radius: radiusM,
+            color: '#22c55e',
+            fillColor: '#22c55e',
+            fillOpacity: 0.1,
+            weight: 2,
+            dashArray: '5,5'
+        }).addTo(map);
+    }
+
+    function setMapLayer(t) {
+        if (!map) return;
+        if (t === 'street') {
+            map.addLayer(baseLayers.street);
+            map.removeLayer(baseLayers.satellite);
+        } else {
+            map.addLayer(baseLayers.satellite);
+            map.removeLayer(baseLayers.street);
+        }
+    }
+
+    function locateMe() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(p => {
+                map.flyTo([p.coords.latitude, p.coords.longitude], 16);
+                updateMarkerPosition(p.coords.latitude, p.coords.longitude, "GPS");
+            });
+        }
+    }
+
+    // ========================================================================
+    // TAB SWITCHING
+    // ========================================================================
+    function showTab(t) {
+        ['met', 'eco', 'agro', 'gov'].forEach(id => {
+            const e = document.getElementById('tab-' + id);
+            if (e) { e.classList.add('hidden'); e.classList.remove('fade-in'); }
+        });
+        const a = document.getElementById('tab-' + t);
+        if (a) {
+            a.classList.remove('hidden');
+            void a.offsetWidth;
+            a.classList.add('fade-in');
+        }
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+        const btn = document.getElementById('t-' + t);
+        if (btn) btn.classList.add('tab-active');
+
+        // Resize charts when switching tabs
+        setTimeout(() => {
+            Object.values(charts).forEach(ch => { try { ch.resize(); } catch(e) {} });
+        }, 100);
+    }
+
+    // ========================================================================
+    // INIT
+    // ========================================================================
+    window.onload = init;
+    </script>
+</body>
+</html>
