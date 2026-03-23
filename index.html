@@ -244,6 +244,7 @@
                                 <button onclick="showTab('gov')" class="tab-btn" id="t-gov">🏛️ DESTEKLEMELER</button>
                                 <button onclick="showTab('eco')" class="tab-btn" id="t-eco">📊 FİNANSAL</button>
                                 <button onclick="showTab('met')" class="tab-btn" id="t-met">🌦️ METEOROLOJİ</button>
+                                <button onclick="showTab('wb')" class="tab-btn" id="t-wb">💧 SU DENGESİ</button>
                             </div>
 
                             <div class="p-6 md:p-8 text-xs">
@@ -296,6 +297,21 @@
                                         <div class="h-64"><canvas id="chartSoilMoisture"></canvas></div>
                                     </div>
                                     <div id="weatherStrip" class="flex gap-3 overflow-x-auto pt-4 no-scrollbar"></div>
+                                </div>
+
+                                <div id="tab-wb" class="hidden space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-sm font-black text-slate-300 uppercase tracking-widest">Bölgesel Su Dengesi — Thornthwaite Modeli</h4>
+                                        <button onclick="fetchWaterBalance()" class="px-4 py-2 bg-brand/20 text-brand text-xs font-bold rounded-xl hover:bg-brand/30 transition">↻ Güncelle</button>
+                                    </div>
+                                    <div id="wbLoading" class="text-center py-8 text-slate-500 hidden">Veriler yükleniyor...</div>
+                                    <div id="wbCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="h-72"><canvas id="chartWBBar"></canvas></div>
+                                        <div class="h-72"><canvas id="chartWBCum"></canvas></div>
+                                    </div>
+                                    <div id="wbTable" class="overflow-x-auto"></div>
+                                    <p class="text-[9px] text-slate-600">Yöntem: FAO-56 Penman-Monteith ETo, Thornthwaite Su Bütçesi | Veri: Open-Meteo API | Tarla Kapasitesi: 150 mm</p>
                                 </div>
                             </div>
                         </div>
@@ -1748,7 +1764,7 @@
     // TAB SWITCHING
     // ========================================================================
     function showTab(t) {
-        ['met', 'eco', 'agro', 'gov'].forEach(id => {
+        ['met', 'eco', 'agro', 'gov', 'wb'].forEach(id => {
             const e = document.getElementById('tab-' + id);
             if (e) { e.classList.add('hidden'); e.classList.remove('fade-in'); }
         });
@@ -1765,7 +1781,163 @@
         // Resize charts when switching tabs
         setTimeout(() => {
             Object.values(charts).forEach(ch => { try { ch.resize(); } catch(e) {} });
+            if (wbChartBar) try { wbChartBar.resize(); } catch(e) {}
+            if (wbChartCum) try { wbChartCum.resize(); } catch(e) {}
         }, 100);
+        // Auto-load water balance on first visit
+        if (t === 'wb' && !wbChartBar) fetchWaterBalance();
+    }
+
+    // ========================================================================
+    // WATER BALANCE MODULE
+    // ========================================================================
+    const WB_REGIONS = {
+        'Adana': { lat: 37.00, lon: 35.32, label: 'Çukurova' },
+        'Konya': { lat: 37.87, lon: 32.48, label: 'İç Anadolu' },
+        'Ankara': { lat: 39.58, lon: 32.15, label: 'Polat\u0131' },
+        '\u015eanl\u0131urfa': { lat: 37.15, lon: 38.79, label: 'GAP' },
+        '\u0130zmir': { lat: 38.42, lon: 27.14, label: 'Ege' },
+        'Trabzon': { lat: 41.00, lon: 39.72, label: 'Karadeniz' },
+        'Edirne': { lat: 41.67, lon: 26.56, label: 'Trakya' },
+    };
+    const WB_COLORS = ['#22c55e','#ef4444','#3b82f6','#f97316','#a855f7','#06b6d4','#eab308'];
+    let wbChartBar = null, wbChartCum = null;
+
+    async function fetchWaterBalance() {
+        const loading = document.getElementById('wbLoading');
+        loading.classList.remove('hidden');
+        const AWC = 150;
+        const results = {};
+        const names = Object.keys(WB_REGIONS);
+
+        for (const name of names) {
+            const r = WB_REGIONS[name];
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${r.lat}&longitude=${r.lon}&hourly=soil_moisture_0_to_1cm&daily=precipitation_sum,et0_fao_evapotranspiration,temperature_2m_max,temperature_2m_min&past_days=90&forecast_days=7&timezone=Europe/Istanbul`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                const daily = data.daily || {};
+                const precip = (daily.precipitation_sum || []).map(v => v ?? 0);
+                const et0 = (daily.et0_fao_evapotranspiration || []).map(v => v ?? 0);
+                const dates = daily.time || [];
+                const totalP = precip.reduce((a,b) => a+b, 0);
+                const totalET = et0.reduce((a,b) => a+b, 0);
+                const balance = totalP - totalET;
+                // Thornthwaite SWS
+                let sws = AWC * 0.7, surplus = 0, deficit = 0;
+                const cumBal = [];
+                let cumSum = 0;
+                for (let i = 0; i < precip.length; i++) {
+                    cumSum += precip[i] - et0[i];
+                    cumBal.push(cumSum);
+                    const pot = sws + precip[i];
+                    if (pot >= et0[i]) {
+                        const rem = pot - et0[i];
+                        if (rem > AWC) { surplus += rem - AWC; sws = AWC; } else { sws = rem; }
+                    } else {
+                        deficit += et0[i] - pot * 0.8;
+                        sws = Math.max(0, pot * 0.2);
+                    }
+                }
+                let status = 'OLUMLU';
+                if (balance < -20) status = 'R\u0130SKL\u0130';
+                else if (balance < 50) status = 'MARJ\u0130NAL';
+                results[name] = { totalP, totalET, balance, surplus, deficit, sws, status, dates, cumBal };
+            } catch(e) {
+                results[name] = { totalP:0, totalET:0, balance:0, surplus:0, deficit:0, sws:0, status:'HATA', dates:[], cumBal:[] };
+            }
+        }
+        loading.classList.add('hidden');
+        renderWaterBalance(results);
+    }
+
+    function renderWaterBalance(results) {
+        const names = Object.keys(results);
+        // Cards
+        const cardsEl = document.getElementById('wbCards');
+        cardsEl.innerHTML = names.map((n, i) => {
+            const r = results[n];
+            const color = r.status === 'OLUMLU' ? 'text-green-400' : (r.status === 'MARJ\u0130NAL' ? 'text-yellow-400' : 'text-red-400');
+            const bg = r.status === 'OLUMLU' ? 'border-green-900/40' : (r.status === 'MARJ\u0130NAL' ? 'border-yellow-900/40' : 'border-red-900/40');
+            return `<div class="p-3 bg-slate-800 rounded-xl border ${bg}">
+                <div class="text-[10px] text-slate-500 uppercase font-bold">${n} (${WB_REGIONS[n].label})</div>
+                <div class="text-lg font-black ${color} mt-1">${r.balance >= 0 ? '+' : ''}${r.balance.toFixed(0)} mm</div>
+                <div class="text-[9px] text-slate-500 mt-1">Ya\u011f\u0131\u015f: ${r.totalP.toFixed(0)} mm | ETo: ${r.totalET.toFixed(0)} mm</div>
+                <div class="text-[9px] font-bold ${color} mt-0.5">${r.status}</div>
+            </div>`;
+        }).join('');
+
+        // Bar Chart
+        const ctxBar = document.getElementById('chartWBBar').getContext('2d');
+        if (wbChartBar) wbChartBar.destroy();
+        wbChartBar = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: names,
+                datasets: [
+                    { label: 'Ya\u011f\u0131\u015f (mm)', data: names.map(n => results[n].totalP), backgroundColor: '#3b82f6' },
+                    { label: 'ETo (mm)', data: names.map(n => results[n].totalET), backgroundColor: '#ef4444' },
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } }, title: { display: true, text: 'Ya\u011f\u0131\u015f vs Evapotranspirasyon (90+7 g\u00fcn)', color: '#e2e8f0', font: { size: 12, weight: 'bold' } } },
+                scales: { x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' }, title: { display: true, text: 'mm', color: '#94a3b8' } } }
+            }
+        });
+
+        // Cumulative Line Chart
+        const ctxCum = document.getElementById('chartWBCum').getContext('2d');
+        if (wbChartCum) wbChartCum.destroy();
+        const maxLen = Math.max(...names.map(n => results[n].dates.length));
+        const refDates = results[names[0]].dates.length > 0 ? results[names[0]].dates : Array.from({length: maxLen}, (_, i) => `G\u00fcn ${i+1}`);
+        wbChartCum = new Chart(ctxCum, {
+            type: 'line',
+            data: {
+                labels: refDates.map(d => d.substring(5)),
+                datasets: names.map((n, i) => ({
+                    label: n,
+                    data: results[n].cumBal,
+                    borderColor: WB_COLORS[i % WB_COLORS.length],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    fill: false,
+                }))
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } }, title: { display: true, text: 'K\u00fcm\u00fclatif Su Dengesi (P - ETo)', color: '#e2e8f0', font: { size: 12, weight: 'bold' } } },
+                scales: { x: { ticks: { color: '#64748b', font: { size: 8 }, maxTicksLimit: 12 }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' }, title: { display: true, text: 'mm', color: '#94a3b8' } } }
+            }
+        });
+
+        // Table
+        const tbl = document.getElementById('wbTable');
+        tbl.innerHTML = `<table class="w-full text-[10px]">
+            <thead><tr class="border-b border-slate-700 text-slate-400">
+                <th class="text-left py-2 px-2">B\u00f6lge</th>
+                <th class="text-right px-2">Ya\u011f\u0131\u015f</th>
+                <th class="text-right px-2">ETo</th>
+                <th class="text-right px-2">Denge</th>
+                <th class="text-right px-2">Fazla</th>
+                <th class="text-right px-2">SWS</th>
+                <th class="text-center px-2">Durum</th>
+            </tr></thead><tbody>
+            ${names.map(n => {
+                const r = results[n];
+                const sc = r.status === 'OLUMLU' ? 'text-green-400' : (r.status === 'MARJ\u0130NAL' ? 'text-yellow-400' : 'text-red-400');
+                return `<tr class="border-b border-slate-800 hover:bg-slate-800/50">
+                    <td class="py-2 px-2 font-bold text-slate-300">${n} (${WB_REGIONS[n].label})</td>
+                    <td class="text-right px-2">${r.totalP.toFixed(0)} mm</td>
+                    <td class="text-right px-2">${r.totalET.toFixed(0)} mm</td>
+                    <td class="text-right px-2 font-bold ${sc}">${r.balance >= 0 ? '+' : ''}${r.balance.toFixed(0)} mm</td>
+                    <td class="text-right px-2">${r.surplus.toFixed(0)} mm</td>
+                    <td class="text-right px-2">${r.sws.toFixed(0)} mm</td>
+                    <td class="text-center px-2 font-black ${sc}">${r.status}</td>
+                </tr>`;
+            }).join('')}
+            </tbody></table>`;
     }
 
     // ========================================================================
